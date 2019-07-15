@@ -21,23 +21,27 @@ public class DumbAI extends Controller {
 	}
 
 	protected @Override Location nextMove(Game g) {
-		// Note: Calling delay here will make the CLUI work a little more
-		// nicely when competing different AIs against each other.
-		
 		
 		// TODO Auto-generatsd method stub
-		List<Location> available = new ArrayList<Location>();
+		//container that contains all blank space 
+		List<Location> vacant = new ArrayList<Location>();
 		
+		//checking location starting from the smallest column number from the smallest row number
 		for(Location loc:Board.LOCATIONS) {
+			
+			//check whether the location is played or not
 			if(g.getBoard().get(loc) == null)
-				available.add(loc);
+				vacant.add(loc);
 		}
 		
+		// Note: Calling delay here will make the CLUI work a little more
+		// nicely when competing different AIs against each other.
 		delay();
 		
-		Location avail_loc = available.get(0);
+		//getting the valid location from the smallest column number from the smalles row number
+		Location avail_loc = vacant.get(0);
+		
+		//return result
 		return avail_loc;
-		
-		
 	}
 }
