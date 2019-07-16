@@ -1,6 +1,10 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNull;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Validate;
 
 import model.Board;
 import model.Board.State;
@@ -55,7 +59,8 @@ import model.Player;
  * the estimation of how good the board is for the given player.
  */
 public abstract class MinMaxAI extends Controller {
-
+	int depth;
+	int player;
 	/**
 	 * Return an estimate of how good the given board is for me.
 	 * A result of infinity means I have won.  A result of negative infinity
@@ -80,7 +85,7 @@ public abstract class MinMaxAI extends Controller {
 	protected MinMaxAI(Player me, int depth) {
 		super(me);
 		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		this.depth = depth;
 	}
 
 	/**
@@ -89,6 +94,97 @@ public abstract class MinMaxAI extends Controller {
 	 */
 	protected @Override Location nextMove(Game g) {
 		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		int max_value;
+		
+		Board brd = g.getBoard();
+		
+		List<Location> locStorage = new ArrayList<Location>();
+		
+		int compare = Le_Penseur(depth, me, brd);
+		
+		for(Location loc:moves(g.getBoard())) {
+			max_value = estimate(g.getBoard());
+			if(max_value==compare)
+				locStorage.add(loc);
+		}
+		
+		Location avail_loc =  locStorage.get(0);
+		
+		return avail_loc;
+		
+	}
+	
+	private int Le_Penseur(int extent, Player who, Board b) {
+	
+//		player += 1;
+//		if(player%2 == 0 || player ==0)
+//			who = me;
+//		else if (player%2 == 1)
+//			who = me.opponent();
+
+		
+		List<Integer> intStorage = new ArrayList<Integer>();
+		
+		
+		
+			if(who==me) {
+				int max_value = Integer.MIN_VALUE;
+				for(Location loc:moves(b)) {	
+					if(depth == 0 || b.getState()!=State.NOT_OVER) {
+						intStorage.add(0,estimate(b));
+//						if(b.getWinner().winner == me)
+//							intStorage.add(0,Integer.MAX_VALUE);
+//						else if(b.getWinner().winner == me.opponent())
+//							intStorage.add(0,Integer.MIN_VALUE);
+//						else
+//							intStorage.add(0,0);
+					} 
+					int max_compare = Le_Penseur(extent-1, me.opponent(), b.update(me, loc));
+					max_value = Math.max(max_compare, max_value);
+				}
+				intStorage.add(0,max_value);
+				
+			}else if(who == me.opponent()) {
+				int min_value = Integer.MAX_VALUE;
+				for(Location loc:moves(b)) {
+					if(depth == 0 || b.getState()!=State.NOT_OVER) {
+						intStorage.add(0,estimate(b));
+//						if(b.getWinner().winner == me)
+//							intStorage.add(0,Integer.MAX_VALUE);
+//						else if(b.getWinner().winner == me.opponent())
+//							intStorage.add(0,Integer.MIN_VALUE);
+//						else
+//							intStorage.add(0,0);
+					} 
+					int min_compare = Le_Penseur(extent-1, me, b.update(me.opponent(), loc));
+					min_value = Math.min(min_value, min_compare);
+				}
+				intStorage.add(0, min_value);
+			}
+		
+		
+		int Rscore = intStorage.get(0);
+		
+		return Rscore;
+		
+	}
+	
+	private class Node{
+		int score;
+		Location step;
+		
+		public Node(int score, Location step) {
+			this.score = score;
+			this.step = step;
+		}
+		
+		public int gScore() {
+			return score;
+		}
+		
+		public Location gStep() {
+			return step;
+		}
+		
 	}
 }
