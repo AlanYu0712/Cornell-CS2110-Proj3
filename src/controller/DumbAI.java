@@ -38,7 +38,7 @@ public class DumbAI extends Controller {
 		// nicely when competing different AIs against each other.
 		delay();
 		
-		//getting the valid location from the smallest column number from the smalles row number
+		//getting the valid location from the smallest column number from the smallest row number
 		Location avail_loc = vacant.get(0);
 		
 		//return result
